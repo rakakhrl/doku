@@ -1,0 +1,23 @@
+{
+  "name": "@rakakhrl/doku",
+  "version": "0.0.1",
+  "description": "Thin wrapper of Dinero.JS for working with monetary value",
+  "license": "ISC",
+  "author": "rakakhrl",
+  "type": "commonjs",
+  "main": "./dist/index.ts",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup && tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "tsup": "^8.5.1",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "dinero.js": "^2.0.2"
+  }
+}
