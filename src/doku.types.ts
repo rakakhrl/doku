@@ -1,3 +1,4 @@
+import { Dinero } from "dinero.js";
 import { DineroCurrency } from "dinero.js/currencies";
 
 interface DokuOptions {
