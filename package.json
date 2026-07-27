@@ -8,8 +8,12 @@
   "main": "./dist/index.ts",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsup && tsc"
+    "build": "tsup && tsc",
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
