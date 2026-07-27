@@ -1,6 +1,6 @@
 {
   "name": "@rakakhrl/doku",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Thin wrapper of Dinero.JS for working with monetary value",
   "license": "ISC",
   "author": "rakakhrl",

@@ -14,7 +14,21 @@ import {
 } from "dinero.js";
 import { DokuComparisonResult } from "./doku.types";
 
+/**
+ * A utility class containing pure functions (static methods) to perform mathematical
+ * and logical operations on Doku instances.
+ *
+ * All methods treat Doku instances as immutable; they do not modify the original
+ * input but instead return a brand new Doku instance containing the calculated result.
+ */
 export class DokuOperation {
+  /**
+   * Adds two Doku amounts together.
+   *
+   * @param {Doku} augend - The base amount.
+   * @param {Doku} addend - The amount to be added.
+   * @returns {Doku} A new Doku instance representing the sum.
+   */
   static add(augend: Doku, addend: Doku): Doku {
     const result = dineroAdd(augend.dinero_object, addend.dinero_object);
     return new Doku(result.toJSON().amount, {
@@ -23,6 +37,13 @@ export class DokuOperation {
     });
   }
 
+  /**
+   * Subtracts one Doku amount from another.
+   *
+   * @param {Doku} minuend - The base amount to subtract from.
+   * @param {Doku} subtrahend - The amount to subtract.
+   * @returns {Doku} A new Doku instance representing the difference.
+   */
   static subtract(minuend: Doku, subtrahend: Doku): Doku {
     const result = dineroSubtract(
       minuend.dinero_object,
@@ -34,6 +55,12 @@ export class DokuOperation {
     });
   }
 
+  /**
+   * Adds multiple Doku amounts together sequentially.
+   *
+   * @param {Doku[]} moneyList - An array of Doku instances to be summed.
+   * @returns {Doku} A new Doku instance representing the total sum.
+   */
   static add_many(moneyList: Doku[]): Doku {
     const transform = moneyList.map((m) => m.dinero_object);
     const calculate = (addends: Dinero<number, string>[]) =>
@@ -46,6 +73,12 @@ export class DokuOperation {
     });
   }
 
+  /**
+   * Subtracts multiple Doku amounts sequentially from the first item in the array.
+   *
+   * @param {Doku[]} moneyList - An array of Doku instances.
+   * @returns {Doku} A new Doku instance representing the final subtracted amount.
+   */
   static subtract_many(moneyList: Doku[]): Doku {
     const transform = moneyList.map((m) => m.dinero_object);
     const calculate = (subtrahends: Dinero<number, string>[]) =>
@@ -58,6 +91,13 @@ export class DokuOperation {
     });
   }
 
+  /**
+   * Multiplies a Doku amount by a standard integer.
+   *
+   * @param {Doku} multipicant - The base amount to multiply.
+   * @param {number} multiplier - The integer to multiply by.
+   * @returns {Doku} A new Doku instance representing the product.
+   */
   static multiply_integer(multipicant: Doku, multiplier: number): Doku {
     const result = dineroMultiply(multipicant.dinero_object, multiplier);
 
@@ -67,6 +107,13 @@ export class DokuOperation {
     });
   }
 
+  /**
+   * Multiplies a Doku amount by a scaled Dinero multiplier (e.g., for fractions or percentages).
+   *
+   * @param {Doku} multiplicant - The base amount.
+   * @param {DineroScaledAmount<number>} multiplier - The scaled multiplier object.
+   * @returns {Doku} A new Doku instance representing the product.
+   */
   static multiply_scale(
     multiplicant: Doku,
     multiplier: DineroScaledAmount<number>,
@@ -79,6 +126,14 @@ export class DokuOperation {
     });
   }
 
+  /**
+   * Extracts a specific percentage portion from a base Doku amount.
+   * Safely allocates the amount to avoid precision loss or floating-point errors.
+   *
+   * @param {Doku} base - The total base amount.
+   * @param {number} percentage - The percentage to extract (e.g., 11 for 11%).
+   * @returns {Doku} A new Doku instance representing the extracted percentage.
+   */
   static take_percentage(base: Doku, percentage: number): Doku {
     const rest = 100 - percentage;
     const [result] = allocate(base.dinero_object, [percentage, rest]);
@@ -89,6 +144,14 @@ export class DokuOperation {
     });
   }
 
+  /**
+   * Distributes a base Doku amount into multiple parts based on an array of percentages.
+   * Useful for splitting bills or calculating multiple tax/fee brackets.
+   *
+   * @param {Doku} base - The total base amount.
+   * @param {number[]} percentages - An array of percentages representing the distribution ratios.
+   * @returns {Doku[]} An array of new Doku instances corresponding to each percentage.
+   */
   static distribute_percentage(base: Doku, percentages: number[]): Doku[] {
     const result = allocate(base.dinero_object, percentages);
 
@@ -101,6 +164,13 @@ export class DokuOperation {
     );
   }
 
+  /**
+   * Prorates (distributes) a base Doku amount proportionally based on another set of Doku amounts.
+   *
+   * @param {Doku} base - The base amount to be distributed.
+   * @param {Doku[]} proporsional - An array of Doku amounts defining the ratio of distribution.
+   * @returns {Doku[]} An array of new prorated Doku instances.
+   */
   static prorate(base: Doku, proporsional: Doku[]): Doku[] {
     const result = allocate(
       base.dinero_object,
@@ -116,6 +186,13 @@ export class DokuOperation {
     );
   }
 
+  /**
+   * Compares two Doku amounts.
+   *
+   * @param {Doku} base - The base amount to compare.
+   * @param {Doku} comparator - The amount to compare against.
+   * @returns {DokuComparisonResult | undefined} `"equal"`, `"less"`, `"greater"`, or undefined if comparison fails.
+   */
   static compare(
     base: Doku,
     comparator: Doku,
@@ -134,6 +211,14 @@ export class DokuOperation {
     }
   }
 
+  /**
+   * Rounds the Doku amount to a specified scale using a specific rounding behavior.
+   *
+   * @param {Doku} base - The Doku amount to round.
+   * @param {"up" | "down" | "nearest"} direction - The rounding strategy to apply.
+   * @param {number} [scale=2] - The new scale to transform the amount to (defaults to 2).
+   * @returns {Doku} A new rounded Doku instance.
+   */
   static rounding(
     base: Doku,
     direction: "up" | "down" | "nearest",
@@ -163,6 +248,13 @@ export class DokuOperation {
     });
   }
 
+  /**
+   * Custom rounding method that forcefully rounds the raw amount value at a specific decimal position.
+   *
+   * @param {Doku} base - The Doku amount to round.
+   * @param {number} position - The decimal position to execute the Math.round logic on.
+   * @returns {Doku} A new Doku instance with the modified amount.
+   */
   static rounding_on_position(base: Doku, position: number): Doku {
     if (position >= base.amount.toString().length) {
       return base;
@@ -175,4 +267,36 @@ export class DokuOperation {
       scale: base.scale,
     });
   }
+
+  /**
+     * Finds the maximum Doku amount from a given array of Doku instances.
+     *
+     * @param {Doku[]} moneyList - The array of Doku instances to compare.
+     * @returns {Doku} The Doku instance with the highest value.
+     * @throws {Error} If the provided array is empty.
+     */
+    static max(moneyList: Doku[]): Doku {
+      if (moneyList.length === 0) {
+        throw new Error("Cannot find the maximum value of an empty array.");
+      }
+      return moneyList.reduce((prev, current) => {
+        return (current.amount > prev.amount) ? current : prev;
+      });
+    }
+
+    /**
+     * Finds the minimum Doku amount from a given array of Doku instances.
+     *
+     * @param {Doku[]} moneyList - The array of Doku instances to compare.
+     * @returns {Doku} The Doku instance with the lowest value.
+     * @throws {Error} If the provided array is empty.
+     */
+    static min(moneyList: Doku[]): Doku {
+      if (moneyList.length === 0) {
+        throw new Error("Cannot find the minimum value of an empty array.");
+      }
+      return moneyList.reduce((prev, current) => {
+        return (current.amount < prev.amount) ? current : prev;
+      });
+    }
 }
