@@ -1,6 +1,6 @@
 {
   "name": "@rakakhrl/doku",
-  "version": "0.0.3",
+  "version": "0.0.3-rc.1",
   "description": "Thin wrapper of Dinero.JS for working with monetary value",
   "license": "ISC",
   "author": "rakakhrl",
@@ -11,6 +11,10 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rakakhrl/doku.git"
+  },
   "scripts": {
     "build": "tsup && tsc",
     "prepublish": "npm run build"
